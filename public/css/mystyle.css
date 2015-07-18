@@ -1,0 +1,13 @@
+.navbar {
+    position: fixed;
+    z-index: 9999;
+    width: 100%;
+}
+
+.homepost {
+    margin-top: 5%;
+}
+
+.alert-info-error{
+    margin-top: 10%;
+}

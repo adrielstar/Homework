@@ -51,6 +51,8 @@ Route::group(['middleware' => ['auth']], function()
     // delete comment
     Route::post('comment/delete/{id}','CommentController@distroy');
 
+
+
 });
 
 //users profile
@@ -61,3 +63,7 @@ Route::get('user/{id}/posts','UserController@user_posts')->where('id', '[0-9]+')
 
 // display single post
 Route::get('/{slug}',['as' => 'post', 'uses' => 'PostController@show'])->where('slug', '[A-Za-z0-9-_]+');
+
+
+// Dashbouard
+Route::get('dash/user/{id}','UserController@dashboard')->where('id', '[0-9]+');

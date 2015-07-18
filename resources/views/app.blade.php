@@ -7,6 +7,7 @@
     <title>Adriel Walter | Agreat Blog</title>
 
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/mystyle.css') }}" rel="stylesheet">
 
     <!-- Fonts -->
     <link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
@@ -28,7 +29,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="homework.local">Adriel</a>
+            <a class="navbar-brand" href="{{ url('/') }}">Adriel</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -52,7 +53,7 @@
                         <ul class="dropdown-menu" role="menu">
                             @if (Auth::user()->is_admin())
                                 <li>
-                                    <a href="">Dashboard</a>
+                                    <a href="{{ url('/dash/user/'.Auth::id()) }}">Dashboard</a>
                                 </li>
                             @endif
                             @if (Auth::user()->can_post())
@@ -79,15 +80,15 @@
 
 <div class="container">
     @if (Session::has('message'))
-        <div class="flash alert-info">
-            <p class="panel-body">
+        <div class="flash alert-info ">
+            <p class="panel-body alert-info-error">
                 {{ Session::get('message') }}
             </p>
         </div>
     @endif
     @if ($errors->any())
         <div class='flash alert-danger'>
-            <ul class="panel-body">
+            <ul class="panel-body alert-info-error">
                 @foreach ( $errors->all() as $error )
                     <li>
                         {{ $error }}
@@ -98,7 +99,7 @@
     @endif
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default">
+            <div class="panel panel-default homepost">
                 <div class="panel-heading">
                     <h2>@yield('title')</h2>
                     @yield('title-meta')
@@ -111,7 +112,7 @@
     </div>
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <p>Copyright &copy; 2015 | <a href="http://www.findalltogether.com">Find All Together</a></p>
+            <p>Copyright &copy; 2015 | <a href="{{ url('/') }}">Adriel</a></p>
         </div>
     </div>
 </div>

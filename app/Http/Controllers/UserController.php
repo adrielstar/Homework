@@ -23,6 +23,7 @@ class UserController extends Controller {
         return view('home')->withPosts($posts)->withTitle($title);
     }
 
+
     /*
      * Display all of the posts of a particular user
      *
@@ -75,5 +76,16 @@ class UserController extends Controller {
         $data['latest_comments'] = $data['user'] -> comments -> take(5);
         return view('admin.profile', $data);
     }
+
+    public function dashboard($id)
+    {
+        $data['user'] = User::find($id);
+        $persoons = User::all();
+
+        $datas['users_count'] = $data['user'] -> count();
+        $datas['persoons'] = $persoons;
+        return view('dash', $datas);
+    }
+
 
 }

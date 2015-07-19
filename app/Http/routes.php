@@ -10,7 +10,17 @@
 |
 */
 
-Route::get('/','PostController@index');
+// get the map template
+get('/', function()
+{
+    return view('googlemap.map');
+});
+
+
+Route::resource('admin-dashboard','UserController');
+
+// event post route
+Route::get('events','PostController@index');
 
 Route::get('/home',['as' => 'home', 'uses' => 'PostController@index']);
 
@@ -63,7 +73,3 @@ Route::get('user/{id}/posts','UserController@user_posts')->where('id', '[0-9]+')
 
 // display single post
 Route::get('/{slug}',['as' => 'post', 'uses' => 'PostController@show'])->where('slug', '[A-Za-z0-9-_]+');
-
-
-// Dashbouard
-Route::get('dash/user/{id}','UserController@dashboard')->where('id', '[0-9]+');

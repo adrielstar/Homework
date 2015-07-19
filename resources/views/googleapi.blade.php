@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Veiligstalling | Agreat Blog</title>
 
+    <!-- CSS Style -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/mystyle.css') }}" rel="stylesheet">
 
-    <!-- Fonts -->
+       <!-- Fonts -->
     <link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -18,6 +19,9 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <!--google Api-->
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -82,35 +86,14 @@
 </nav>
 
 <div class="container">
-    @if (Session::has('message'))
-        <div class="flash alert-info ">
-            <p class="panel-body alert-info-error">
-                {{ Session::get('message') }}
-            </p>
+    <div class="row homepost ">
+        <div class="col-md-2 col-sm-12 ">
+            <h2>@yield('title')</h2>
+            @yield('title-meta')
+            @yield('content-2')
         </div>
-    @endif
-    @if ($errors->any())
-        <div class='flash alert-danger'>
-            <ul class="panel-body alert-info-error">
-                @foreach ( $errors->all() as $error )
-                    <li>
-                        {{ $error }}
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default homepost">
-                <div class="panel-heading">
-                    <h2 class="center-text">@yield('title')</h2>
-                    @yield('title-meta')
-                </div>
-                <div class="panel-body">
-                    @yield('content')
-                </div>
-            </div>
+        <div class="col-md-10 col-sm-12">
+            @yield('content')
         </div>
     </div>
     <div class="row">
@@ -123,5 +106,9 @@
 <!-- Scripts -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+<!-- JavaScript js -->
+<script src="{{ asset('/js/map/googlemap.js') }}" ></script>
+
 </body>
 </html>

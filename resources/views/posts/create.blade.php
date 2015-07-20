@@ -1,7 +1,7 @@
-@extends('app')
+@extends('layouts.profile')
 
 @section('title')
-    Add New Post
+    {{ $user->name }}
 @endsection
 
 @section('content')

@@ -103,6 +103,21 @@
                     <h2 class="center-text">@yield('title')</h2>
                     @yield('title-meta')
                 </div>
+                @yield('tab')
+
+                <ul class="nav nav-tabs nav-justified">
+                    <li role="presentation"  class="{{ Request::is('user/'.Auth::id()) ? 'active' : '' }}">
+                        <a href="{{ url('/user/'.Auth::id()) }}">My Profile</a>
+                    </li>
+
+                    <li role="presentation" class="{{ Request::is('user/'.Auth::id().'/posts') ? 'active' : '' }}">
+                        <a href="{{ url('/user/'.Auth::id().'/posts') }}">My Posts</a>
+                    </li>
+
+                    <li role="presentation" class="{{ Request::is('user/'.Auth::id().'/new-post') ? 'active' : '' }}">
+                        <a href="{{ url('/user/'.Auth::id().'/new-post') }}">Add new post</a>
+                    </li>
+                </ul>
                 <div class="panel-body">
                     @yield('content')
                 </div>

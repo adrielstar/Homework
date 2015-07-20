@@ -1,10 +1,10 @@
-@extends('app')
+@extends('layouts.post')
 
 @section('title')
     @if($post)
         {{ $post->title }}
         @if(!Auth::guest() && ($post->author_id == Auth::user()->id || Auth::user()->is_admin()))
-            <button class="btn" role="button" style="float: right" href="{{ URL('edit/'.$post->slug)}}">Edit Post</button>
+            <a class="btn btn-info" role="button" style="float: right" href="{{ URL('edit/'.$post->slug)}}">Edit Post</a>
         @endif
     @else
         Page does not exist

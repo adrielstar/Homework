@@ -1,4 +1,4 @@
-@extends('app')
+@extends('layouts.admin')
 
 @section('title')
     <p class="center-text">Welkom {{ Auth::user()->name }} to the Admin Dash-Board</p>

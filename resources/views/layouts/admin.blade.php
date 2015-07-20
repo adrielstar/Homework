@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Veiligstalling | Agreat Blog</title>
 
-    <!-- CSS Style -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/mystyle.css') }}" rel="stylesheet">
 
-       <!-- Fonts -->
+    <!-- Fonts -->
     <link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -19,15 +18,13 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <!--google Api-->
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 </head>
 <body>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
                 <span class="sr-only">Toggle Navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -56,7 +53,8 @@
                     </li>
                 @else
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             @if (Auth::user()->is_admin())
                                 <li>
@@ -65,15 +63,9 @@
                             @endif
                             @if (Auth::user()->can_post())
                                 <li>
-                                    <a href="{{ url('/new-post') }}">Add new post</a>
-                                </li>
-                                <li>
-                                    <a href="{{ url('/user/'.Auth::id().'/posts') }}">My Posts</a>
+                                    <a href="{{ url('/user/'.Auth::id()) }}">My Profile</a>
                                 </li>
                             @endif
-                            <li>
-                                <a href="{{ url('/user/'.Auth::id()) }}">My Profile</a>
-                            </li>
                             <li>
                                 <a href="{{ url('/auth/logout') }}">Logout</a>
                             </li>
@@ -86,14 +78,35 @@
 </nav>
 
 <div class="container">
-    <div class="row homepost ">
-        <div class="col-md-2 col-sm-12 ">
-            <h2>@yield('title')</h2>
-            @yield('title-meta')
-            @yield('content-2')
+    @if (Session::has('message'))
+        <div class="flash alert-info ">
+            <p class="panel-body alert-info-error">
+                {{ Session::get('message') }}
+            </p>
         </div>
-        <div class="col-md-10 col-sm-12">
-            @yield('content')
+    @endif
+    @if ($errors->any())
+        <div class='flash alert-danger'>
+            <ul class="panel-body alert-info-error">
+                @foreach ( $errors->all() as $error )
+                    <li>
+                        {{ $error }}
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-default homepost">
+                <div class="panel-heading">
+                    <h2 class="center-text">@yield('title')</h2>
+                    @yield('title-meta')
+                </div>
+                <div class="panel-body">
+                    @yield('content')
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -106,9 +119,5 @@
 <!-- Scripts -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
-<!-- JavaScript js -->
-<script src="{{ asset('/js/map/googlemap.js') }}" ></script>
-
 </body>
 </html>

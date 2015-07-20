@@ -17,7 +17,7 @@ get('/', function()
 });
 
 
-Route::resource('admin-dashboard','UserController');
+Route::resource('admin-dashboard','adminDashboardController');
 
 // event post route
 Route::get('events','PostController@index');
@@ -70,6 +70,8 @@ Route::get('user/{id}','UserController@profile')->where('id', '[0-9]+');
 
 // display list of posts
 Route::get('user/{id}/posts','UserController@user_posts')->where('id', '[0-9]+');
+
+Route::get('user/{id}/new-post','UserController@create_posts')->where('id', '[0-9]+');
 
 // display single post
 Route::get('/{slug}',['as' => 'post', 'uses' => 'PostController@show'])->where('slug', '[A-Za-z0-9-_]+');

@@ -1,11 +1,10 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Posts;
-
-use Illuminate\Http\Request;
 
 class UserController extends Controller {
 
@@ -20,7 +19,14 @@ class UserController extends Controller {
         //
         $posts = Posts::where('author_id',$id)->where('active',1)->orderBy('created_at','desc')->paginate(5);
         $title = User::find($id)->name;
-        return view('home')->withPosts($posts)->withTitle($title);
+        return view('userpost')->withPosts($posts)->withTitle($title);
+    }
+
+    public function create_posts($id)
+    {
+        //
+        $user = User::find($id);
+        return view('posts/create', compact('user'));
     }
 
 
@@ -63,7 +69,7 @@ class UserController extends Controller {
         if (!$data['user'])
             return redirect('/');
 
-        if ($request -> user() && $data['user'] -> id == $request -> user() -> id) {
+        if ($request && $data['user'] -> id == $request) {
             $data['author'] = true;
         } else {
             $data['author'] = null;
@@ -75,75 +81,6 @@ class UserController extends Controller {
         $data['latest_posts'] = $data['user'] -> posts -> where('active', '1') -> take(5);
         $data['latest_comments'] = $data['user'] -> comments -> take(5);
         return view('admin.profile', $data);
-    }
-
-    public function index()
-    {
-        //
-        $users = User::all();
-        return view('admin.dash',compact('users'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return Response
-     */
-    public function store()
-    {
-        //
-    }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        $user = User::find($id);
-        return view('admin.show',compact('user'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function update($id)
-    {
-        //
-    }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        User::find($id)->delete();
-        return redirect('admin.dash');
     }
 
 

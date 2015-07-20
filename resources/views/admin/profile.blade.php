@@ -1,4 +1,4 @@
-@extends('app')
+@extends('layouts.profile')
 
 @section('title')
     {{ $user->name }}
@@ -6,6 +6,8 @@
 
 @section('content')
     <div>
+        @section('tab')
+        @endsection
         <ul class="list-group">
             <li class="list-group-item">
                 Joined on {{$user->created_at->format('M d,Y \a\t h:i a') }}

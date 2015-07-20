@@ -53,7 +53,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
         return false;
     }
-
     public function is_admin()
     {
         $role = $this->role;

@@ -1,4 +1,4 @@
-@extends('googleapi')
+@extends('layouts.googleapi')
 
 @section('content')
 <div class="container-fluid">

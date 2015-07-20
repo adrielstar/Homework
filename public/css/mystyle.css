@@ -1,0 +1,29 @@
+.navbar {
+    position: fixed;
+    z-index: 9999;
+    width: 100%;
+}
+
+.homepost {
+    margin-top: 5%;
+}
+
+.alert-info-error{
+    margin-top: 10%;
+}
+
+#map-canvas {
+    height: 500px;
+    margin: 0px;
+    padding: 0px;
+    margin-left: 3px;
+}
+
+.center-text{
+    text-align: center;
+}
+
+.btn-del{
+    width: 100%;
+}
+

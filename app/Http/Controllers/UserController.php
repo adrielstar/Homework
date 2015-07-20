@@ -1,11 +1,10 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Posts;
-
-use Illuminate\Http\Request;
 
 class UserController extends Controller {
 
@@ -20,8 +19,16 @@ class UserController extends Controller {
         //
         $posts = Posts::where('author_id',$id)->where('active',1)->orderBy('created_at','desc')->paginate(5);
         $title = User::find($id)->name;
-        return view('home')->withPosts($posts)->withTitle($title);
+        return view('userpost')->withPosts($posts)->withTitle($title);
     }
+
+    public function create_posts($id)
+    {
+        //
+        $user = User::find($id);
+        return view('posts/create', compact('user'));
+    }
+
 
     /*
      * Display all of the posts of a particular user
@@ -62,7 +69,7 @@ class UserController extends Controller {
         if (!$data['user'])
             return redirect('/');
 
-        if ($request -> user() && $data['user'] -> id == $request -> user() -> id) {
+        if ($request && $data['user'] -> id == $request) {
             $data['author'] = true;
         } else {
             $data['author'] = null;
@@ -75,5 +82,6 @@ class UserController extends Controller {
         $data['latest_comments'] = $data['user'] -> comments -> take(5);
         return view('admin.profile', $data);
     }
+
 
 }

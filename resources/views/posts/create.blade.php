@@ -1,11 +1,10 @@
-@extends('app')
+@extends('layouts.profile')
 
 @section('title')
-    Add New Post
+    {{ $user->name }}
 @endsection
 
 @section('content')
-
     <script type="text/javascript" src="{{ asset('/js/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript">
         tinymce.init({

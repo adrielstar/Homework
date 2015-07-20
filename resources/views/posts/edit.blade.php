@@ -1,7 +1,7 @@
-@extends('app')
+@extends('layouts.post')
 
 @section('title')
-    Edit Post
+    <p> Edit Post</p>
 @endsection
 
 @section('content')

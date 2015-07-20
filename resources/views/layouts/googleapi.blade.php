@@ -1,3 +1,13 @@
+<?php use App\Stalling_rest;
+
+$call = new Stalling_Rest();
+$stallingen = $call->getStallingen();
+
+?>
+<script>
+    var stallingen = <?php echo json_encode($call->getStallingen()); ?>
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,7 +114,9 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
 <!-- JavaScript js -->
+
 <script src="{{ asset('/js/map/googlemap.js') }}"></script>
+
 
 </body>
 </html>

@@ -7,14 +7,17 @@ var infoWindow = new google.maps.InfoWindow();
 var storeInfowindow = new google.maps.InfoWindow();
 var stallingeninfowindow = new google.maps.InfoWindow();
 var arrayStoreMarkers = [];
-var directionsDisplay = new google.maps.DirectionsRenderer();
-var directionsService = new google.maps.DirectionsService();
 var stalingmarkermarkers = [];
 var htmls = [];
 var to_htmls = [];
+// set direction render options
+var rendererOptions = { draggable: true };
+var directionsService = new google.maps.DirectionsService();
+var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+var bikeStoreVisible = true;
 
 var directionDisplay;
-var directionsService = new google.maps.DirectionsService();
+
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
@@ -35,73 +38,69 @@ function getCookie(cname) {
 }
 
 function initialize() {
+
     myLatlng = new google.maps.LatLng(51.924215999999990000, 4.481775999999968000);
-
-    // set direction render options
-    var rendererOptions = { draggable: true };
-    directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-
     mapOptions = {
         zoom: 13,
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
     };
-    map = new google.maps.Map(document.getElementById('map-canvas'),
-        mapOptions);
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
     directionsDisplay.setMap(map);
     directionsDisplay.setPanel(document.getElementById("directionsPanel"));
     google.maps.event.addListener(map, 'click', function() {
         infoWindow.close();
     });
-    // Markers icon
+
+    // Markers icons
     bike_location = new google.maps.MarkerImage('images/BikeLocationIcon.png');
     stallingen_ImageIcon = new google.maps.MarkerImage('images/bike.png');
 
-    // Try HTML5 geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-            setCookie("latitude",position.coords.latitude,1);
-            setCookie("longitude",position.coords.longitude,1);
+                setCookie("latitude",position.coords.latitude,1);
+                setCookie("longitude",position.coords.longitude,1);
 
-            pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-            contentString = 'current location';
+                contentString = 'current location';
 
-            // request to google api to get all bicycle_store
-            request = {
-                location: myLatlng,
-                radius: 1000,
-                types: ['bicycle_store']
-            };
+                // request to google api to get all bicycle_store
+                request = {
+                    location: myLatlng,
+                    radius: 1000,
+                    types: ['bicycle_store']
+                };
 
-            service = new google.maps.places.PlacesService(map);
-            service.nearbySearch(request, callback);
+                service = new google.maps.places.PlacesService(map);
+                service.nearbySearch(request, callback);
 
 
-            locationInfowindow = new google.maps.InfoWindow({
-                content: contentString
+                locationInfowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+
+                var currentLocationMarker = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    icon: bike_location
+                });
+
+                google.maps.event.addListener(currentLocationMarker, 'click', function () {
+                    locationInfowindow.open(map, currentLocationMarker);
+                });
+
+                map.setCenter(pos);
+            },
+            function () {
+                handleNoGeolocation(true);
             });
 
-            var currentLocationMarker = new google.maps.Marker({
-                position: pos,
-                map: map,
-                icon: bike_location
-            });
-
-            google.maps.event.addListener(currentLocationMarker, 'click', function () {
-                locationInfowindow.open(map, currentLocationMarker);
-            });
-
-            map.setCenter(pos);
-        }, function () {
-            handleNoGeolocation(true);
-        });
     } else {
         // Browser doesn't support Geolocation
         handleNoGeolocation(false);
     }
-
 
     // create Stallingen Markers
     for (k = 0; k < stallingen.length; k++) {
@@ -123,15 +122,20 @@ function initialize() {
             icon: stallingen_ImageIcon,
             title: stallingName
         });
+
+        // create link to direction
         var html = '<br>Directions: <a href="javascript:tohere(' + k + ')">To here<\/a> ';
+        // cre
+        var  to_here_Adress = '<h6> Stalling Adres: ' + stallingAdres + '</h6>'
+                            + '<h6> Plaats: ' + stallingPlaats + '</h6>';
 
         var k = stalingmarkermarkers.length;
         latlng = stallingenLatLng;
 
         // The info window version with the "to here" form open
-        to_htmls[k] = html + '<br>Directions: <b>To here<\/b> '+
-        '<br>Address:<form action="javascript:getDirections()">' +
-        '<input type="text" SIZE=40 MAXLENGTH=40 name="saddr" id="saddr" value="" placeholder="Empty is current location!" /><br>' +
+        to_htmls[k] = to_here_Adress +
+        '<form action="javascript:getDirections()">' +
+        '<input type="hidden" name="saddr" id="saddr" value="" /><br>' +
         '<INPUT value="Get Directions" TYPE="button" onclick="getDirections()"><br>' +
         'Walk <input type="checkbox" name="walk" id="walk" /> &nbsp; Bike <input type="checkbox" name="bike" id="bike" />' +
         '<input type="hidden" id="daddr" value="' + latlng +
@@ -163,6 +167,9 @@ function initialize() {
 // ===== request the directions =====
 function getDirections() {
 
+    var start = getCookie("latitude") + "," + getCookie("longitude");
+
+
     var request = {};
     if (document.getElementById("walk").checked) {
         request.travelMode = google.maps.DirectionsTravelMode.WALKING;
@@ -184,8 +191,33 @@ function getDirections() {
     directionsService.route(request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
             directionsDisplay.setDirections(response);
+            //var leg = response.routes[ 0 ].legs[ 0 ];
+            //makeMarker( leg.start_location, icons.start, "title" );
+            //makeMarker( leg.end_location, icons.end, 'title' );
         } else alert("Directions not found:" + status);
     });
+
+    // Start/Finish icons
+    //var icons = {
+    //    start: new google.maps.MarkerImage(
+    //        // URL
+    //        'images/BikeLocationIcon.png'
+    //    ),
+    //    end: new google.maps.MarkerImage(
+    //        // URL
+    //        'images/bike.png'
+    //    )
+    //};
+
+
+    //function makeMarker( position, icon, title ) {
+    //    new google.maps.Marker({
+    //        position: position,
+    //        map: map,
+    //        icon: icon,
+    //        title: title
+    //    });
+    //}
 }
 
 
@@ -218,7 +250,7 @@ function callback(results, status) {
 
 /**
  *
- * @param place
+ * @param Bike store place
  */
 function createMarker(place) {
     var placeLoc = place.geometry.location;
@@ -277,6 +309,40 @@ function stallingenInfoWindow(stallingMarker, stallingenDetails) {
             stallingMarker.open = false;
         }
     });
+}
+
+
+/**
+ * Hide bike Store
+ */
+function hideBikestore() {
+    if (arrayStoreMarkers) {
+        for (var i = 0; i < arrayStoreMarkers.length; i++) {
+            arrayStoreMarkers[i].setMap(null);
+        }
+    }
+}
+/**
+ *  show bike store
+ */
+function showBikeStore() {
+    if (arrayStoreMarkers) {
+        for (var i = 0; i < arrayStoreMarkers.length; i++) {
+            arrayStoreMarkers[i].setMap(map);
+        }
+    }
+}
+function changeBikeStoreVisibility() {
+    if(!bikeStoreVisible) {
+        showBikeStore();
+        document.getElementById("btn").className = " btn btn-sm btn-success glyphicon glyphicon-home";
+        bikeStoreVisible = true;
+    }
+    else  {
+        hideBikestore();
+        document.getElementById("btn").className = "btn btn-sm btn-danger glyphicon glyphicon-home";
+        bikeStoreVisible = false;
+    }
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

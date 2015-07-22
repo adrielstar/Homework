@@ -3,9 +3,46 @@
     z-index: 9999;
     width: 100%;
 }
-
 .homepost {
-    margin-top: 5%;
+    margin-top:20%;
+}
+
+@media (min-width: 768px) {
+    .homepost {
+        margin-top: 10%;
+    }
+}
+
+@media (min-width: 992px) {
+    .homepost {
+        margin-top: 8%;
+    }
+}
+@media (min-width: 1200px) {
+    .homepost {
+        margin-top: 4%;
+    }
+}
+
+.modal-dialog{
+    margin-top:20%;
+}
+
+@media (min-width: 768px) {
+    .modal-dialog {
+        margin-top: 15%;
+    }
+}
+
+@media (min-width: 992px) {
+    .modal-dialog {
+        margin-top: 10%;
+    }
+}
+@media (min-width: 1200px) {
+    .modal-dialog {
+        margin-top: 6%;
+    }
 }
 
 .alert-info-error{
@@ -14,9 +51,6 @@
 
 #map-canvas {
     height: 500px;
-    margin: 0px;
-    padding: 0px;
-    margin-left: 3px;
 }
 
 .center-text{
@@ -24,6 +58,21 @@
 }
 
 .btn-del{
+    width: 100%;
+}
+.container{
+    width: 100%;
+}
+
+.mapcontroler{
+    float: right;
+}
+
+.panel{
+    overflow-y: scroll;
+}
+
+#directionsPanel{
     width: 100%;
 }
 

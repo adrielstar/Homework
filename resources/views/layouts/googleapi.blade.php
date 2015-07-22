@@ -1,13 +1,3 @@
-<?php use App\Stalling_rest;
-
-$call = new Stalling_Rest();
-$stallingen = $call->getStallingen();
-
-?>
-<script>
-    var stallingen = <?php echo json_encode($call->getStallingen()); ?>
-</script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,6 +83,11 @@ $stallingen = $call->getStallingen();
 
 <div class="container">
     <div class="row homepost ">
+        <div class="col-md-10 col-sm-12 mapcontroler">
+            @yield('panel')
+        </div>
+    </div>
+    <div class="row ">
         <div class="col-md-2 col-sm-12 ">
             <h2>@yield('title')</h2>
             @yield('title-meta')
@@ -114,9 +109,15 @@ $stallingen = $call->getStallingen();
 <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
 <!-- JavaScript js -->
-
+<?php
+    use App\Http\Controllers\stalling_restController;
+    $call = new stalling_restController();
+    $stallingen = $call->stallingCall();
+?>
+<script>
+    var stallingen = <?php echo json_encode($stallingen); ?>
+</script>
 <script src="{{ asset('/js/map/googlemap.js') }}"></script>
-
 
 </body>
 </html>

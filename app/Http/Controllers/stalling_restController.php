@@ -12,7 +12,7 @@ class stalling_restController extends Controller
     {
         $call = new Stalling_Rest();
         $stallingen = $call->getStallingen();
-        return json_decode($stallingen);
+        return ($stallingen);
     }
 
 

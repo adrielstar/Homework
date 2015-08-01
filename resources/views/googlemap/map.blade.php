@@ -3,13 +3,13 @@
 @section('panel')
      <div class="btn-group btn-group-justified" role="group" aria-label="...">
         <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-primary glyphicon glyphicon-flag">Route</button>
+            <button type="button" class="btn btn-sm btn-primary glyphicon glyphicon-flag" onclick="setEnd();return false;">Route</button>
         </div>
         <div class="btn-group" role="group">
             <button id="btn" type="button" class="btn btn-success btn-sm  glyphicon glyphicon-home" onclick="changeBikeStoreVisibility()">Store</button>
         </div>
         <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-primary glyphicon glyphicon-globe">Google Maps</button>
+            <button id="gameAnchor" type="button" class="btn btn-sm btn-primary glyphicon glyphicon-globe">Google Maps</button>
         </div>
         <div class="btn-group">
             <!-- Button HTML (to Trigger Modal) -->
@@ -71,12 +71,22 @@
         </div>
     </div>
 @endsection
+@section('search')
+    <div class="modal-body">
+        <div class="form-group">
+            {{--<label for="location-to" class="abs inside">Fill your route</label>--}}
+            <input type="text" id="location-to" class="form-control input-sm" name="location-to" placeholder="Hit button route for search " required/>
+        </div>
+    </div>
+
+
+@endsection
 
 @section('content-2')
     <div class="list-group">
-        <a class="list-group-item active">
-            <h4 class="list-group-item-heading center-text">panel</h4>
-        </a>
+        {{--<a class="list-group-item ">--}}
+            {{--<h4 class="list-group-item-heading center-text">panel</h4>--}}
+        {{--</a>--}}
         <div class="col-md-2 col-sm-12 panel" id="directionsPanel"></div>
     </div>
 @endsection

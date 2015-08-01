@@ -20,7 +20,7 @@
 }
 @media (min-width: 1200px) {
     .homepost {
-        margin-top: 4%;
+        margin-top: 5%;
     }
 }
 
@@ -64,15 +64,34 @@
     width: 100%;
 }
 
-.mapcontroler{
-    float: right;
+
+
+@media (min-width: 992px) {
+    .mapcontroler{
+        float: right;
+    }
+}
+@media (min-width: 1200px) {
+    .mapcontroler{
+        float: right;
+    }
 }
 
 .panel{
     overflow-y: scroll;
+    height: 481px;
 }
 
 #directionsPanel{
     width: 100%;
 }
 
+
+.form-group {
+    margin-bottom: 1px;
+}
+
+.modal-body {
+    position: relative;
+    padding: 2px;
+}

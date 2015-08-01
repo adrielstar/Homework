@@ -19,6 +19,9 @@ var bikeStoreVisible = true;
 var directionDisplay;
 
 
+var start = getCookie("latitude") + "," + getCookie("longitude");
+var appPath;
+
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -47,7 +50,20 @@ function initialize() {
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
+
+    // Create the search box and link it to the UI element.
+    var input = /** @type {HTMLInputElement} */(
+        document.getElementById('location-to'));
+    var searchBox = new google.maps.places.SearchBox(
+        /** @type {HTMLInputElement} */(input),
+        {
+            types: ['(cities)']
+        //componentRestrictions: countryRestrict
+        });
+
+
     directionsDisplay.setMap(map);
+
     directionsDisplay.setPanel(document.getElementById("directionsPanel"));
     google.maps.event.addListener(map, 'click', function() {
         infoWindow.close();
@@ -343,6 +359,145 @@ function changeBikeStoreVisibility() {
         document.getElementById("btn").className = "btn btn-sm btn-danger glyphicon glyphicon-home";
         bikeStoreVisible = false;
     }
+}
+
+
+function setEnd() {
+    postcode = document.getElementById("location-to").value;
+    $.post("http://maps.googleapis.com/maps/api/geocode/json?address=" + postcode + "+Netherlands",
+        function (data) {
+            calcRoute(data.results[0]["geometry"]["location"]["lat"] + "," + data.results[0]["geometry"]["location"]["lng"]);
+        });
+}
+
+function deg2rad(angle) {
+    //  discuss at: http://phpjs.org/functions/deg2rad/
+    // original by: Enrique Gonzalez
+    // improved by: Thomas Grainger (http://graingert.co.uk)
+    //   example 1: deg2rad(45);
+    //   returns 1: 0.7853981633974483
+
+    return angle * .017453292519943295; // (angle / 180) * Math.PI;
+}
+
+function rad2deg(angle) {
+    //  discuss at: http://phpjs.org/functions/rad2deg/
+    // original by: Enrique Gonzalez
+    // improved by: Brett Zamir (http://brett-zamir.me)
+    //   example 1: rad2deg(3.141592653589793);
+    //   returns 1: 180
+
+    return angle * 57.29577951308232; // angle / Math.PI * 180
+}
+
+function getDistance(latitude1, longitude1, latitude2, longitude2) {
+    earth_radius = 6371;
+
+    dLat = deg2rad( latitude2 - latitude1 );
+    dLon = deg2rad( longitude2 - longitude1 );
+
+    a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(latitude1)) * Math.cos(deg2rad(latitude2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    c = 2 * Math.asin(Math.sqrt(a));
+    d = earth_radius * c;
+
+    return d * 1000;
+}
+
+function calculate_distance(latitude1, longitude1, latitude2, longitude2){
+    dist = Math.sin(deg2rad(latitude1)) * Math.sin(deg2rad(latitude2)) + Math.cos(deg2rad(latitude1)) * Math.cos(deg2rad(latitude2)) * Math.cos(deg2rad(longitude1 - longitude2));
+    dist = Math.acos(dist);
+    dist = rad2deg(dist);
+    miles  = dist * 60 * 1.1515;
+
+    return miles * 1609.344;
+}
+
+function calcRoute(me) {
+    var found = false;
+    var waypoints = [];
+
+    var relevantStallingPositions = [];
+    var relevantStallingDistance = [];
+
+    for (i = 0; i < stallingen.length; i++) {
+        stallingLat = stallingen[i]["lat"];
+        stallingLng = stallingen[i]["lng"];
+
+        endArray = me.split(",");
+        endLat = endArray[0];
+        endLng = endArray[1];
+
+        distance = calculate_distance(endLat, endLng, stallingLat, stallingLng);
+        if (distance < 400) {
+            waypoint = stallingLat +","+stallingLng;
+
+            relevantStallingDistance.push(distance);
+            relevantStallingPositions.push(waypoint);
+
+            console.log("found ------ " + stallingLat +","+stallingLng + " dist: " + distance);
+            found = true;
+        }
+    }
+
+    if (found) {
+
+        var index = 0;
+        var value = relevantStallingDistance[0];
+        for (var i = 1; i < relevantStallingDistance.length; i++) {
+            if (relevantStallingDistance[i] < value) {
+                value = relevantStallingDistance[i];
+                index = i;
+            }
+        }
+
+        waypoint = relevantStallingPositions[index];
+
+        waypoints.push({
+            location: waypoint,
+            stopover: true
+        });
+        console.log("caling route   " + me);
+
+        var request = {
+            origin: start,
+            destination: me,
+            waypoints: waypoints,
+            unitSystem: google.maps.UnitSystem.IMPERIAL,
+            travelMode: google.maps.DirectionsTravelMode["BICYCLING"]
+        };
+
+        directionsService.route(request, function (response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+            } else {
+                // alert an error message when the route could nog be calculated.
+                if (status == 'ZERO_RESULTS') {
+                    alert('No route could be found between the origin and destination.');
+                } else if (status == 'UNKNOWN_ERROR') {
+                    alert('A directions request could not be processed due to a server error. The request may succeed if you try again.');
+                } else if (status == 'REQUEST_DENIED') {
+                    alert('This webpage is not allowed to use the directions service.');
+                } else if (status == 'OVER_QUERY_LIMIT') {
+                    alert('The webpage has gone over the requests limit in too short a period of time.');
+                } else if (status == 'NOT_FOUND') {
+                    alert('At least one of the origin, destination, or waypoints could not be geocoded.');
+                } else if (status == 'INVALID_REQUEST') {
+                    alert('The DirectionsRequest provided was invalid.');
+                } else {
+                    alert("There was an unknown error in your request. Requeststatus: nn" + status);
+                }
+            }
+        });
+
+        appPath = "comgooglemaps://?saddr=" + start + "&daddr=" + waypoint + "&directionsmode=bicycling";
+        document.getElementById("gameAnchor").setAttribute("href", appPath);
+    } else {
+        alert("Helaas geen stalling in de buurt van eind bestemming.");
+    }
+}
+
+function panelVisibility() {
+    directionsDisplay.setPanel(document.getElementById("directionsPanel").style.visibility = "hidden");
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

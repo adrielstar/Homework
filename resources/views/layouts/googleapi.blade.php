@@ -83,17 +83,22 @@
 
 <div class="container">
     <div class="row homepost ">
-        <div class="col-md-10 col-sm-12 mapcontroler">
+        <div class="col-md-8 col-sm-12 mapcontroler">
             @yield('panel')
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-8 col-sm-12 mapcontroler">
+            @yield('search')
+        </div>
+    </div>
     <div class="row ">
-        <div class="col-md-2 col-sm-12 ">
+        <div class="col-md-4 col-sm-12 ">
             <h2>@yield('title')</h2>
             @yield('title-meta')
             @yield('content-2')
         </div>
-        <div class="col-md-10 col-sm-12">
+        <div class="col-md-8 col-sm-12">
             @yield('content')
         </div>
     </div>

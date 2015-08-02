@@ -9,7 +9,9 @@
             <button id="btn" type="button" class="btn btn-success btn-sm  glyphicon glyphicon-home" onclick="changeBikeStoreVisibility()">Store</button>
         </div>
         <div class="btn-group">
-            <button id="gameAnchor" type="button" class="btn btn-sm btn-primary glyphicon glyphicon-globe">Google Maps</button>
+            <a id="gameAnchor" href="comgooglemaps://">
+            <button id="" type="button" class="btn btn-sm btn-primary glyphicon glyphicon-globe" onclick="">Google Maps</button>
+            </a>
         </div>
         <div class="btn-group">
             <!-- Button HTML (to Trigger Modal) -->
